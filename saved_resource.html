@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<style>
+					body {
+						background-color: white; /* Ensure the iframe has a white background */
+					}
+				</style>
+				<script>
+					const CDN_WHITELIST = [
+						'cdn.jsdelivr.net',
+						'cdnjs.cloudflare.com',
+						'cdn.tailwindcss.com',
+						'unpkg.com',
+						'fonts.googleapis.com',
+						'd3js.org',
+						'cdn.babylonjs.com',
+						'html2canvas.hertzen.com',
+						'code.jquery.com',
+						'cdn.datatables.net',
+						'kit.fontawesome.com',
+						'code.createjs.com',
+						'cdn.plot.ly',
+						'fonts.gstatic.com',
+						'www.rgraph.net',
+						'api.mapbox.com',
+						'polyfill.io',
+						'cdn.quilljs.com',
+						'picsum.photos',
+						'esm.sh'
+					];
+
+					function isUrlInWhitelist(url) {
+						if (!url || typeof url !== 'string') {
+							return false;
+						}
+						try {
+							const urlObj = new URL(url);
+							const hostname = urlObj.hostname;
+							return CDN_WHITELIST.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+						} catch (e) {
+							return false;
+						}
+					}
+
+					function proxyCdnUrl(url) {
+						if (!url || !url.startsWith('http')) {
+							return url;
+						}
+						if (url && (url.startsWith('http://') || url.startsWith('https://')) && !url.startsWith('https://artifacts-cdn.chatglm.site/')) {
+							const proxiedUrl = 'https://artifacts-cdn.chatglm.site/' + url;
+							return proxiedUrl;
+						}
+						return url;
+					}
+
+					const rawCreateElement = document.createElement;
+
+					document.createElement = function (tagName, ...args) {
+						const el = rawCreateElement.call(this, tagName, ...args);
+
+						if (tagName.toLowerCase() === 'script') {
+							const rawSetAttribute = el.setAttribute;
+							const rawGetAttribute = el.getAttribute;
+							let srcValue = '';
+							
+							el.setAttribute = function (name, value) {
+								if (name === 'src' && typeof value === 'string') {
+									value = proxyCdnUrl(value);
+									srcValue = value;
+								}
+								return rawSetAttribute.call(this, name, value);
+							};
+
+							Object.defineProperty(el, 'src', {
+								get: function() {
+									return srcValue || rawGetAttribute.call(this, 'src') || '';
+								},
+								set: function(value) {
+									if (typeof value === 'string') {
+										srcValue = proxyCdnUrl(value);
+										rawSetAttribute.call(this, 'src', srcValue);
+									} else {
+										srcValue = value;
+									}
+								},
+								configurable: true,
+								enumerable: true
+							});
+						}
+
+						if (tagName.toLowerCase() === 'link') {
+							const rawSetAttribute = el.setAttribute;
+							const rawGetAttribute = el.getAttribute;
+							let hrefValue = '';
+							
+							el.setAttribute = function (name, value) {
+								if (name === 'href' && typeof value === 'string') {
+									value = proxyCdnUrl(value);
+									hrefValue = value;
+								}
+								return rawSetAttribute.call(this, name, value);
+							};
+
+							Object.defineProperty(el, 'href', {
+								get: function() {
+									return hrefValue || rawGetAttribute.call(this, 'href') || '';
+								},
+								set: function(value) {
+									if (typeof value === 'string') {
+										hrefValue = proxyCdnUrl(value);
+										rawSetAttribute.call(this, 'href', hrefValue);
+									} else {
+										hrefValue = value;
+									}
+								},
+								configurable: true,
+								enumerable: true
+							});
+						}
+
+						return el;
+					};
+
+					const OriginalXMLHttpRequest = window.XMLHttpRequest;
+					window.XMLHttpRequest = function (...args) {
+						const xhr = new OriginalXMLHttpRequest(...args);
+						const rawOpen = xhr.open;
+
+						xhr.open = function (method, url, ...rest) {
+							if (typeof url === 'string') {
+								const methodUpper = (method || '').toUpperCase();
+								if (methodUpper === 'GET' && isUrlInWhitelist(url)) {
+									url = proxyCdnUrl(url);
+								}
+							}
+							return rawOpen.call(this, method, url, ...rest);
+						};
+
+						return xhr;
+					};
+
+					window.XMLHttpRequest.prototype = OriginalXMLHttpRequest.prototype;
+					Object.setPrototypeOf(window.XMLHttpRequest, OriginalXMLHttpRequest);
+
+					const originalFetch = window.fetch;
+					window.fetch = async function (...args) {
+						if (args.length > 0) {
+							let url = '';
+							let method = 'GET';
+							
+							if (typeof args[0] === 'string') {
+								url = args[0];
+								if (args[1] && args[1].method) {
+									method = args[1].method.toUpperCase();
+								}
+								if (method === 'GET' && isUrlInWhitelist(url)) {
+									args[0] = proxyCdnUrl(url);
+								}
+							} else if (args[0] instanceof Request) {
+								const originalUrl = args[0].url;
+								method = (args[0].method || 'GET').toUpperCase();
+								if (method === 'GET' && isUrlInWhitelist(originalUrl)) {
+									const proxiedUrl = proxyCdnUrl(originalUrl);
+									if (proxiedUrl !== originalUrl) {
+										args[0] = new Request(proxiedUrl, args[0]);
+									}
+								}
+							}
+						}
+						return originalFetch.apply(this, args);
+					};
+				</script>
+			</head>
+			<body>
+				
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaste - The Ultimate Fasting Companion</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://artifacts-cdn.chatglm.site/https://fonts.gstatic.com" crossorigin="">
+    <link href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://artifacts-cdn.chatglm.site/https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Brand Colors */
+            --primary-dark: #1a1a1a;
+            --primary-gray: #2d2d2d;
+            --brand-orange: #ff7e5f;
+            --brand-purple: #6a11cb;
+            --gradient-main: linear-gradient(135deg, var(--brand-orange), var(--brand-purple));
+            --text-main: #ffffff;
+            --text-secondary: #a0a0a0;
+            --success: #00c851;
+            --bg-body: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Utility Classes */
+        .gradient-text {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--brand-purple);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(106, 17, 203, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header / Nav */
+        header {
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            z-index: 1002; /* Ensure logo is above sidebar on mobile */
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: white;
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--brand-purple);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Mobile Nav Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            z-index: 1002;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #121212 70%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* App Layout Grid */
+        .app-dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            padding: 40px 0;
+            min-height: 80vh;
+            margin-top: -20px;
+            padding-top: 60px;
+            position: relative;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            height: fit-content;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-summary {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 10px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 12px 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            text-align: left;
+            cursor: pointer;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .menu-btn:hover, .menu-btn.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+        
+        .menu-btn.active {
+            border-left: 3px solid var(--brand-orange);
+        }
+
+        /* Close Sidebar Button for Mobile */
+        .close-sidebar-btn {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Protocol Selector */
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .protocol-card {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .protocol-card:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .protocol-card.selected {
+            border-color: var(--brand-purple);
+            background: linear-gradient(180deg, rgba(106, 17, 203, 0.1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .protocol-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Timeline / Day Planner */
+        .timeline-container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .day-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+        
+        .day-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-tab {
+            min-width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: #2d2d2d;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .day-tab strong {
+            font-size: 1.1rem;
+            display: block;
+        }
+
+        .day-tab.active {
+            background: var(--gradient-main);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .day-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        
+        .day-content.active {
+            display: block;
+        }
+
+        /* Schedule Visualizer */
+        .schedule-bar {
+            display: flex;
+            height: 60px;
+            border-radius: 30px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+            background: #333;
+        }
+
+        .fasting-segment {
+            background: #4a4a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            transition: width 1s ease;
+        }
+
+        .eating-segment {
+            background: var(--brand-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 0 15px rgba(255, 126, 95, 0.4);
+        }
+
+        /* Food Menu */
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .meal-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .meal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .meal-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #333;
+        }
+
+        .meal-info {
+            padding: 15px;
+        }
+
+        .meal-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .meal-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 10px;
+        }
+
+        .macro-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Breaking The Fast Modal/Section */
+        .break-fast-alert {
+            background: linear-gradient(90deg, rgba(255,126,95,0.1), rgba(106,17,203,0.1));
+            border: 1px solid var(--brand-orange);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--brand-orange);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* Charts Area (CSS Only Charts) */
+        .chart-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 150px;
+            gap: 10px;
+            padding-top: 20px;
+        }
+
+        .bar {
+            width: 12%;
+            background: var(--gradient-main);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: height 1s ease;
+            opacity: 0.8;
+        }
+        
+        .bar:hover {
+            opacity: 1;
+        }
+
+        .bar span {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .bar .tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        .bar:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-fasting {
+            background: rgba(106, 17, 203, 0.2);
+            color: #b388ff;
+            border: 1px solid rgba(106, 17, 203, 0.3);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border-left: 4px solid var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+
+        @media (max-width: 768px) {
+            /* Dashboard Layout */
+            .app-dashboard {
+                grid-template-columns: 1fr;
+                padding-top: 20px;
+            }
+
+            /* Top Nav Links - Hide Text Links */
+            nav ul {
+                display: none;
+            }
+
+            /* Mobile Menu Button - Show */
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            /* Sidebar - Fixed Off Canvas */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 80%; /* Takes 80% of screen */
+                z-index: 1001; /* Above everything except toast/header elements */
+                border-radius: 0;
+                transform: translateX(-100%); /* Hidden by default */
+                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+                padding-top: 60px; /* Space for close button */
+            }
+
+            /* Active State for Sidebar */
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            /* Close Button - Show only on mobile */
+            .close-sidebar-btn {
+                display: block;
+            }
+
+            /* Backdrop overlay */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1000;
+                backdrop-filter: blur(2px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .close-sidebar-btn {
+                display: none;
+            }
+        }
+
+    </style>
+
+
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-content">
+            <div class="logo-area" onclick="navigateTo(&#39;dashboard&#39;, event)">
+                <div class="mobile-nav-toggle" id="mobile-menu-btn"><i class="fas fa-bars"></i></div>
+                <!-- EXACT UPLOADED LOGO USED HERE -->
+                <img src="https://z-cdn-media.chatglm.cn/files/e7b442e8-140e-4085-a3cc-f33f3bb05955.PNG?auth_key=1868649072-509e5674a7774c5ca8de2a8baf1be2cf-0-858671f3c1c609830c6539ad78da5344" alt="Phaste Logo" class="logo-img">
+                <div class="logo-text">phaste</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://chat.z.ai/c/073d10b1-9d35-4810-a275-6320b86b03c6#dashboard" id="nav-dashboard" class="active" onclick="navigateTo(&#39;dashboard&#39;, event)">Dashboard</a></li>
+                    <li><a href="https://chat.z.ai/c/073d10b1-9d35-4810-a275-6320b86b03c6#protocols" id="nav-protocols" onclick="navigateTo(&#39;protocols&#39;, event)">Protocols</a></li>
+                    <li><a href="https://chat.z.ai/c/073d10b1-9d35-4810-a275-6320b86b03c6#meal-plans" id="nav-meal-plans" onclick="navigateTo(&#39;meal-plans&#39;, event)">Meal Plans</a></li>
+                    <li><a href="https://chat.z.ai/c/073d10b1-9d35-4810-a275-6320b86b03c6#analytics" id="nav-analytics" onclick="navigateTo(&#39;analytics&#39;, event)">Analytics</a></li>
+                </ul>
+            </nav>
+            <!-- Hide Upgrade button on small screens to save space, or keep it if you prefer -->
+            <button class="btn btn-primary" onclick="showToast(&#39;Welcome to Phaste Premium!&#39;)" style="display: none; @media (min-width: 769px) { display: inline-flex; }">Upgrade Pro</button>
+        </div>
+    </header>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Master Your Metabolism <br><span class="gradient-text">With Phaste</span></h1>
+            <p>The new standard in intermittent fasting. Personalized schedules, tailored meal plans, and scientifically backed breaking protocols to guide you into healthier habits.</p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button class="btn btn-primary" onclick="navigateTo(&#39;dashboard&#39;, event)">Start Fasting Now</button>
+                <button class="btn btn-outline">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main App Dashboard -->
+    <main class="container app-dashboard" id="app-dashboard">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <button class="close-sidebar-btn" id="close-sidebar-btn"><i class="fas fa-times"></i></button>
+            
+            <div class="profile-summary">
+                <div class="avatar">
+                    <img src="https://artifacts-cdn.chatglm.site/https://picsum.photos/seed/phasteuser/100/100" alt="User Avatar">
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: white;">Alex Doe</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Target: Weight Loss</div>
+                </div>
+            </div>
+
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <button class="menu-btn active" id="menu-overview" onclick="switchTab(&#39;overview&#39;)">
+                        <i class="fas fa-home"></i> Overview
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-btn" id="menu-schedule" onclick="switchTab(&#39;schedule&#39;)">
+                        <i class="fas fa-calendar-alt"></i> My Schedule
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-btn" id="menu-meals" onclick="switchTab(&#39;meals&#39;)">
+                        <i class="fas fa-utensils"></i> Meal Plans
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-btn" id="menu-breaking" onclick="switchTab(&#39;breaking&#39;)">
+                        <i class="fas fa-glass-water"></i> Breaking Guide
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button class="menu-btn" id="menu-progress" onclick="switchTab(&#39;progress&#39;)">
+                        <i class="fas fa-chart-line"></i> Analytics
+                    </button>
+                </li>
+            </ul>
+
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 15px;">
+                <h4 style="margin-bottom: 10px; color: white;">Current Status</h4>
+                <div id="sidebar-status-timer" style="font-size: 1.5rem; font-weight: bold; color: var(--brand-purple);">04:11:38</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">until eating window</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+            <!-- Tab: Overview -->
+            <div id="tab-overview" class="tab-content">
+                <div class="card" id="card-protocol">
+                    <div class="card-header">
+                        <h2 class="card-title">Select Your Protocol</h2>
+                        <div class="status-badge status-fasting"><i class="fas fa-circle-notch fa-spin" style="margin-right: 8px; font-size: 0.7em;"></i> Fasting Active</div>
+                    </div>
+                    
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Choose a fasting method. We will adjust your menu and breaking recommendations automatically.</p>
+                    
+                    <div class="protocol-grid">
+                        <div class="protocol-card selected" onclick="selectProtocol(this, &#39;16:8&#39;)">
+                            <div class="protocol-icon"><i class="far fa-clock"></i></div>
+                            <h3>16:8 Method</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Fast 16 hours, eat 8 hours. Best for beginners.</p>
+                        </div>
+                        <div class="protocol-card" onclick="selectProtocol(this, &#39;18:6&#39;)">
+                            <div class="protocol-icon"><i class="fas fa-stopwatch"></i></div>
+                            <h3>18:6 Method</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Fast 18 hours, eat 6 hours. For accelerated fat loss.</p>
+                        </div>
+                        <div class="protocol-card" onclick="selectProtocol(this, &#39;20:4&#39;)">
+                            <div class="protocol-icon"><i class="fas fa-fire"></i></div>
+                            <h3>Warrior (20:4)</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Fast 20 hours, one large meal. Advanced level.</p>
+                        </div>
+                        <div class="protocol-card" onclick="selectProtocol(this, &#39;Circadian&#39;)">
+                            <div class="protocol-icon"><i class="fas fa-moon"></i></div>
+                            <h3>Circadian Rhythm</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">Stop eating when sun sets. Natural alignment.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">6-Day Fasting Cycle</h2>
+                        <button class="btn btn-outline" style="padding: 6px 15px; font-size: 0.8rem;">Reset Cycle</button>
+                    </div>
+                    
+                    <div class="day-tabs">
+                        <div class="day-tab active" onclick="switchDay(1)"><strong>D1</strong> Prep</div>
+                        <div class="day-tab" onclick="switchDay(2)"><strong>D2</strong> Cleanse</div>
+                        <div class="day-tab" onclick="switchDay(3)"><strong>D3</strong> Peak</div>
+                        <div class="day-tab" onclick="switchDay(4)"><strong>D4</strong> Burn</div>
+                        <div class="day-tab" onclick="switchDay(5)"><strong>D5</strong> Balance</div>
+                        <div class="day-tab" onclick="switchDay(6)"><strong>D6</strong> Re-feed</div>
+                    </div>
+
+                    <!-- Day 1 Content -->
+                    <div id="day-1" class="day-content active">
+                        <h3>Day 1: Preparation &amp; Hydration</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">Focus on electrolyte balance and easing into the fasted state.</p>
+                        
+                        <div class="schedule-bar">
+                            <div class="fasting-segment" style="width: 66%;">Fasting Window (16h)</div>
+                            <div class="eating-segment" style="width: 34%;">Eating Window (8h)</div>
+                        </div>
+
+                        <div class="break-fast-alert">
+                            <div class="alert-header"><i class="fas fa-bolt"></i> Today's Goal</div>
+                            <p style="font-size: 0.9rem;">Drink 3L of water with a pinch of pink salt. Avoid sugars 2 hours before your fast starts.</p>
+                        </div>
+                    </div>
+
+                    <!-- Day 3 Content (Example of another day) -->
+                    <div id="day-3" class="day-content">
+                        <h3>Day 3: Peak Fat Oxidation</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">Your body is shifting into ketosis. You might feel hungry—this is temporary.</p>
+                        
+                        <div class="schedule-bar">
+                            <div class="fasting-segment" style="width: 75%;">Deep Fasting (18h)</div>
+                            <div class="eating-segment" style="width: 25%;">Eating Window (6h)</div>
+                        </div>
+
+                        <div class="break-fast-alert" style="border-color: var(--brand-purple);">
+                            <div class="alert-header" style="color: var(--brand-purple);"><i class="fas fa-brain"></i> Mental Focus</div>
+                            <p style="font-size: 0.9rem;">Ideal time for deep work. Brain-derived neurotrophic factor (BDNF) is increasing.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Placeholders for other days to demonstrate functionality -->
+                    <div id="day-2" class="day-content"><h3>Day 2: Digestive Rest</h3><p>Allowing your gut to heal.</p></div>
+                    <div id="day-4" class="day-content"><h3>Day 4: Autophagy</h3><p>Cellular cleanup process is accelerating.</p></div>
+                    <div id="day-5" class="day-content"><h3>Day 5: Hormonal Balance</h3><p>Insulin sensitivity is improving.</p></div>
+                    <div id="day-6" class="day-content"><h3>Day 6: Strategic Re-feeding</h3><p>Breaking the fast with nutrient density.</p></div>
+
+                </div>
+            </div>
+
+            <!-- Tab: Meals -->
+            <div id="tab-meals" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Smart Meal Planner</h2>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Vegetarian</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);">Recipes tailored to break your specific fast type without spiking insulin.</p>
+
+                    <h3>Breaking the Fast (First Meal)</h3>
+                    <div class="meal-grid">
+                        <!-- Bone Broth Image -->
+                        <div class="meal-card">
+                            <img src="https://z-cdn-media.chatglm.cn/files/ed055e58-e99a-4803-a6be-ef0783bd5077.JPG?auth_key=1868651045-6af39c064b88494f9701983a661f34df-0-320e60b0fb5fbfd81c5b1c7370f4c380" alt="Bone Broth Soup" class="meal-img">
+                            <div class="meal-info">
+                                <div class="meal-name">Warm Bone Broth</div>
+                                <div class="meal-meta">
+                                    <span class="macro-tag">Easy Digest</span>
+                                    <span class="macro-tag">Sodium</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: #aaa; margin-top: 8px;">Prep: 10 mins. Sip slowly to prepare stomach acid.</p>
+                            </div>
+                        </div>
+
+                        <!-- Avocado & Egg Image -->
+                        <div class="meal-card">
+                            <img src="https://z-cdn-media.chatglm.cn/files/f2cca79f-7ca5-4df0-845b-599f7c5f5ebd.JPG?auth_key=1868651045-0d6593d441ff498cae80ce2b047d18cc-0-3f54780ee0da2cd170675333aa42ce9a" alt="Avocado &amp; Sunnyside Egg" class="meal-img">
+                            <div class="meal-info">
+                                <div class="meal-name">Avocado &amp; Egg</div>
+                                <div class="meal-meta">
+                                    <span class="macro-tag">Healthy Fats</span>
+                                    <span class="macro-tag">Protein</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: #aaa; margin-top: 8px;">Prep: 15 mins. Soft boiled eggs with half an avocado.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Main Meal (Last Meal Before Fast)</h3>
+                    <div class="meal-grid">
+                        <!-- Grilled Salmon Image -->
+                        <div class="meal-card">
+                            <img src="https://z-cdn-media.chatglm.cn/files/ed3fecb6-c68b-4cd0-95eb-33335f62a205.JPG?auth_key=1868651045-d8ab7fda018a4ec2b4b954c7c2433dca-0-a3262b9f7087c0c2b69cf79c1cb8d473" alt="Grilled Salmon" class="meal-img">
+                            <div class="meal-info">
+                                <div class="meal-name">Grilled Salmon &amp; Asparagus</div>
+                                <div class="meal-meta">
+                                    <span class="macro-tag">Omega-3</span>
+                                    <span class="macro-tag">Low Carb</span>
+                                </div>
+                                <p style="font-size: 0.8rem; color: #aaa; margin-top: 8px;">High satiety meal to keep you full through the night.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Breaking Guide -->
+            <div id="tab-breaking" class="tab-content" style="display: none;">
+                <div class="card">
+                    <h2 class="card-title">Breaking Methods &amp; Benefits</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 30px;">How you end your fast is just as important as the fast itself.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px;">
+                            <h3 style="color: var(--brand-orange); margin-bottom: 10px;">The Gentle Break</h3>
+                            <h4 style="font-size: 1rem; margin-bottom: 10px;">Best for: Beginners &amp; Sensitive Stomachs</h4>
+                            <ul style="list-style: none; padding-left: 0; color: var(--text-secondary);">
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 1: Warm water with lemon (1 cup)</li>
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 2: 1 cup bone broth or vegetable broth</li>
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 3: Small portion of fermented food (sauerkraut)</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px;">
+                            <h3 style="color: var(--brand-purple); margin-bottom: 10px;">The Performance Break</h3>
+                            <h4 style="font-size: 1rem; margin-bottom: 10px;">Best for: Athletes &amp; Muscle Gain</h4>
+                            <ul style="list-style: none; padding-left: 0; color: var(--text-secondary);">
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 1: BCAA drink (optional)</li>
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 2: Lean protein source (Chicken/White Fish)</li>
+                                <li style="margin-bottom: 8px;"><i class="fas fa-check" style="color: var(--success); margin-right: 8px;"></i> Step 3: Fast-digesting carbs (White rice)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Progress -->
+            <div id="tab-progress" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Health Impact</h2>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h4 style="margin-bottom: 20px; color: var(--text-secondary);">Estimated Autophagy Levels (6-Day Cycle)</h4>
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 20%;"><span class="tooltip">Level 1</span><span>D1</span></div>
+                            <div class="bar" style="height: 35%;"><span class="tooltip">Level 2</span><span>D2</span></div>
+                            <div class="bar" style="height: 50%;"><span class="tooltip">Level 3</span><span>D3</span></div>
+                            <div class="bar" style="height: 80%;"><span class="tooltip">Peak</span><span>D4</span></div>
+                            <div class="bar" style="height: 75%;"><span class="tooltip">Maintain</span><span>D5</span></div>
+                            <div class="bar" style="height: 40%;"><span class="tooltip">Reset</span><span>D6</span></div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: white;">42</div>
+                            <div style="color: var(--text-secondary);">Hours Fasted Total</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: bold; color: white;">-1.2</div>
+                            <div style="color: var(--text-secondary);">Kg Estimated Weight Loss</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Placeholder for Schedule Tab (not detailed in previous iterations but added for completeness) -->
+            <div id="tab-schedule" class="tab-content" style="display: none;">
+                 <div class="card">
+                    <h2 class="card-title">My Schedule</h2>
+                    <p style="color: var(--text-secondary);">This view would contain a detailed calendar view of your fasting windows.</p>
+                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); border-radius: 10px; margin-top: 20px;">
+                        <i class="far fa-calendar-alt" style="font-size: 3rem; color: #333;"></i>
+                    </div>
+                 </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // State Management
+        let currentProtocol = '16:8';
+        let currentDay = 1;
+        let timerInterval;
+
+        // Data for Protocols
+        const protocolData = {
+            '16:8': { fast: 16, eat: 8, color: '#ff7e5f' },
+            '18:6': { fast: 18, eat: 6, color: '#a4508b' },
+            '20:4': { fast: 20, eat: 4, color: '#6a11cb' },
+            'Circadian': { fast: 12, eat: 12, color: '#2575fc' }
+        };
+
+        // --- Mobile Menu Logic ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function toggleMobileMenu() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        }
+
+        if(mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        }
+        if(closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', closeMobileMenu);
+        }
+        if(sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeMobileMenu);
+        }
+
+        // Auto-close menu when clicking a link in sidebar (good UX)
+        const sidebarLinks = document.querySelectorAll('.menu-btn');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if(window.innerWidth <= 768) {
+                    closeMobileMenu();
+                }
+            });
+        });
+
+        // --- Navigation Logic ---
+
+        // Maps Top Nav links to Internal Tab IDs
+        const navMap = {
+            'dashboard': 'overview',
+            'protocols': 'overview', // Protocol selection is in Overview
+            'meal-plans': 'meals',
+            'analytics': 'progress'
+        };
+
+        function navigateTo(destination, event) {
+            if(event) event.preventDefault();
+
+            // 1. Determine which internal tab to show
+            let targetTab = 'overview';
+            if (navMap[destination]) {
+                targetTab = navMap[destination];
+            }
+
+            // 2. Switch the internal tab
+            switchTab(targetTab);
+
+            // 3. Update Top Nav Active State
+            updateTopNavHighlight(destination);
+
+            // 4. Special Handling for "Protocols" to scroll to the protocol card
+            if (destination === 'protocols') {
+                scrollToElement('card-protocol');
+            } else if (destination === 'dashboard') {
+                scrollToApp();
+            }
+        }
+
+        function updateTopNavHighlight(destination) {
+            // Remove active class from all top nav links
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+            
+            // Add active class to the specific link
+            const activeLink = document.getElementById(`nav-${destination}`);
+            if(activeLink) activeLink.classList.add('active');
+        }
+
+        // Function to switch main content tabs (Sidebar)
+        function switchTab(tabName) {
+            // 1. Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            // 2. Show selected tab
+            const targetContent = document.getElementById(`tab-${tabName}`);
+            if(targetContent) targetContent.style.display = 'block';
+
+            // 3. Update Sidebar styling
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            const targetBtn = document.getElementById(`menu-${tabName}`);
+            if(targetBtn) targetBtn.classList.add('active');
+            
+            // 4. Sync Top Nav based on this tab change
+            let topNavDest = 'dashboard'; // default
+            if(tabName === 'meals') topNavDest = 'meal-plans';
+            if(tabName === 'progress') topNavDest = 'analytics';
+            
+            updateTopNavHighlight(topNavDest);
+        }
+
+        // Function to switch Days (Timeline)
+        function switchDay(day) {
+            currentDay = day;
+            
+            // Update tabs
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('onclick').includes(`(${day})`)) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Update content
+            document.querySelectorAll('.day-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const activeContent = document.getElementById(`day-${day}`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            } else {
+                // Fallback for days not fully implemented in this demo
+                const unimplementedDiv = document.createElement('div');
+                unimplementedDiv.className = 'day-content active';
+                unimplementedDiv.innerHTML = `<h3>Day ${day}</h3><p>Specific plan for Day ${day} would load here based on your protocol.</p>`;
+                
+                const existingTemp = document.querySelector('.day-content[temp]');
+                if(existingTemp) existingTemp.remove();
+                
+                unimplementedDiv.setAttribute('temp', 'true');
+                document.querySelector('.timeline-container').appendChild(unimplementedDiv);
+            }
+        }
+
+        // Function to select Protocol
+        function selectProtocol(card, protocol) {
+            currentProtocol = protocol;
+            
+            // Visual update
+            document.querySelectorAll('.protocol-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            showToast(`Switched to ${protocol} Protocol`);
+
+            // Update visuals dynamically (simulated)
+            updateScheduleVisuals(protocol);
+        }
+
+        function updateScheduleVisuals(protocol) {
+            const data = protocolData[protocol];
+            const total = data.fast + data.eat;
+            const fastPercent = (data.fast / total) * 100;
+            const eatPercent = (data.eat / total) * 100;
+
+            // Update the schedule bar in the active day view
+            const fastSeg = document.querySelector('.fasting-segment');
+            const eatSeg = document.querySelector('.eating-segment');
+
+            if(fastSeg && eatSeg) {
+                fastSeg.style.width = `${fastPercent}%`;
+                fastSeg.textContent = `Fasting (${data.fast}h)`;
+                eatSeg.style.width = `${eatPercent}%`;
+                eatSeg.textContent = `Eating (${data.eat}h)`;
+                eatSeg.style.background = data.color;
+            }
+        }
+
+        // Timer Logic
+        function startTimer() {
+            let timeInSeconds = 4 * 3600 + 12 * 60 + 30; // 4h 12m 30s initial state
+
+            const timerEl = document.getElementById('sidebar-status-timer');
+            
+            if(timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                timeInSeconds--;
+
+                if (timeInSeconds < 0) timeInSeconds = 20 * 3600; // Reset for demo
+
+                const h = Math.floor(timeInSeconds / 3600);
+                const m = Math.floor((timeInSeconds % 3600) / 60);
+                const s = timeInSeconds % 60;
+
+                timerEl.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Scroll Helper
+        function scrollToApp() {
+            const app = document.getElementById('app-dashboard');
+            if(app) app.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToElement(id) {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Toast Notification System
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            startTimer();
+            
+            // Add simple hover interactions for charts
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.addEventListener('mouseenter', () => {
+                    bar.style.opacity = '1';
+                    bar.style.transform = 'scaleY(1.05)';
+                });
+                bar.addEventListener('mouseleave', () => {
+                    bar.style.opacity = '0.8';
+                    bar.style.transform = 'scaleY(1)';
+                });
+            });
+        });
+
+    </script>
+
+
+			
+		
+</body></html>
